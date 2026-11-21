@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор стоимости ТЗ | РАБОТА IT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #005BFF;
+  --primary-dark: #0047CC;
+  --accent: #F91155;
+  --bg: #FFFFFF;
+  --bg-soft: #F5F7FA;
+  --bg-dark: #0A1628;
+  --text: #0A1628;
+  --text-soft: #5A6B80;
+  --border: #E3E8EF;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --shadow: 0 2px 8px rgba(10, 22, 40, 0.06);
+  --shadow-lg: 0 8px 24px rgba(10, 22, 40, 0.1);
+  --radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+/* ===== ШАПКА ===== */
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  box-shadow: var(--shadow);
+  z-index: 100;
+}
+.top-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.logo-block { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 18px;
+}
+.logo-text { font-weight: 700; font-size: 17px; color: var(--text); }
+.logo-text span { color: var(--primary); }
+.doc-badge {
+  background: var(--primary);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ===== LAYOUT ===== */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 24px 60px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 30px;
+}
+
+/* ===== ФОРМА ===== */
+.calculator {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 36px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.step {
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.step-number {
+  width: 36px; height: 36px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.step-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.step-subtitle {
+  color: var(--text-soft);
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+/* ===== КНОПКИ ВЫБОРА ===== */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.option-card {
+  background: var(--bg-soft);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+.option-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.option-card.selected {
+  background: rgba(0, 91, 255, 0.08);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 91, 255, 0.1);
+}
+.option-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  display: block;
+}
+.option-name {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.option-desc {
+  font-size: 12px;
+  color: var(--text-soft);
+  line-height: 1.4;
+}
+.option-price {
+  display: inline-block;
+  margin-top: 8px;
+  background: var(--primary);
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ===== ПОЛЗУНОК ===== */
+.range-wrap {
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+.range-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.range-label { font-weight: 600; color: var(--text); }
+.range-value {
+  background: var(--primary);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+}
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 91, 255, 0.4);
+  transition: transform 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+/* ===== ЧЕКБОКСЫ ===== */
+.checks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-soft);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+.check-item:hover {
+  border-color: var(--primary);
+}
+.check-item input[type="checkbox"] {
+  width: 20px; height: 20px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.check-item.checked {
+  background: rgba(0, 91, 255, 0.08);
+  border-color: var(--primary);
+}
+.check-text { flex: 1; }
+.check-name { font-weight: 600; color: var(--text); }
+.check-price {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ===== ИТОГОВАЯ ПАНЕЛЬ ===== */
+.summary {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--primary);
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  width: 340px;
+  max-height: calc(100vh - 110px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+.summary-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px;
+}
+.summary-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+.summary-title small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-soft);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px dashed var(--border);
+}
+.summary-row:last-of-type { border-bottom: none; }
+.summary-row-label { color: var(--text-soft); }
+.summary-row-value { font-weight: 600; color: var(--text); }
+
+.summary-total {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  padding: 14px;
+  border-radius: var(--radius);
+  margin: 12px 0;
+  text-align: center;
+}
+.summary-total-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+.summary-total-value {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.summary-total-range {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.summary-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.meta-card {
+  background: var(--bg-soft);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+.meta-card-label {
+  font-size: 11px;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.meta-card-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cta-btn {
+  display: block;
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+}
+.cta-btn:hover {
+  background: #C40A42;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(249, 17, 85, 0.3);
+}
+.cta-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-soft);
+  margin-top: 6px;
+}
+
+/* ===== КНОПКА СБРОСА ===== */
+.reset-btn {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  border: 2px solid var(--border);
+  padding: 10px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.reset-btn:hover {
+  background: var(--bg);
+  border-color: var(--text-soft);
+  color: var(--text);
+}
+.reset-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== ФУТЕР ===== */
+.doc-footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 24px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+/* ===== АДАПТИВ ===== */
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .summary {
+    position: static;
+    width: 100%;
+    right: auto;
+    top: auto;
+    max-height: none;
+    order: -1;
+  }
+  .calculator { padding: 24px 20px; }
+  .options-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+  .options-grid { grid-template-columns: 1fr; }
+  .checks-grid { grid-template-columns: 1fr; }
+  .calculator { padding: 20px 16px; }
+  .summary { padding: 20px 16px; }
+  .summary-total-value { font-size: 28px; }
+  .doc-badge { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ШАПКА -->
+<header class="top-header">
+  <div class="top-header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">IT</div>
+      <div class="logo-text">РАБОТА <span>IT</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+      <div style="font-size: 12px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px;">Интерактивный калькулятор</div>
+      <div style="font-size: 16px; font-weight: 800; color: var(--text);">Рассчитайте стоимость <span style="color: var(--accent);">ТЗ</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- ФОРМА -->
+  <div class="calculator">
+
+    <!-- ШАГ 1: ТИП ПРОЕКТА -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">Тип проекта</div>
+      </div>
+      <p class="step-subtitle">Что именно мы будем описывать в ТЗ?</p>
+      <div class="options-grid" id="projectType">
+        <button class="option-card" data-base="3000" data-name="Сайт-визитка">
+          <span class="option-icon">🪧</span>
+          <div class="option-name">Сайт-визитка</div>
+          <div class="option-desc">До 10 страниц, простая структура</div>
+          <span class="option-price">от 3 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="5000" data-name="Лендинг">
+          <span class="option-icon">🎯</span>
+          <div class="option-name">Лендинг</div>
+          <div class="option-desc">Одностраничник с формой заявки</div>
+          <span class="option-price">от 5 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="15000" data-name="Корпоративный сайт">
+          <span class="option-icon">🏢</span>
+          <div class="option-name">Корпоративный сайт</div>
+          <div class="option-desc">Многостраничник с каталогом</div>
+          <span class="option-price">от 15 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="30000" data-name="Интернет-магазин">
+          <span class="option-icon">🛒</span>
+          <div class="option-name">Интернет-магазин</div>
+          <div class="option-desc">Каталог, корзина, оплата</div>
+          <span class="option-price">от 30 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="80000" data-name="Маркетплейс">
+          <span class="option-icon">🏬</span>
+          <div class="option-name">Маркетплейс</div>
+          <div class="option-desc">Множество продавцов, сложный функционал</div>
+          <span class="option-price">от 80 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="50000" data-name="Мобильное приложение">
+          <span class="option-icon">📱</span>
+          <div class="option-name">Мобильное приложение</div>
+          <div class="option-desc">iOS / Android / кроссплатформа</div>
+          <span class="option-price">от 50 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="70000" data-name="SaaS-сервис">
+          <span class="option-icon">☁️</span>
+          <div class="option-name">SaaS-сервис</div>
+          <div class="option-desc">Онлайн-сервис по подписке</div>
+          <span class="option-price">от 70 000 ₽</span>
+        </button>
+        <button class="option-card" data-base="20000" data-name="Telegram-бот">
+          <span class="option-icon">🤖</span>
+          <div class="option-name">Telegram-бот</div>
+          <div class="option-desc">Автоматизация, каталог, оплата</div>
+          <span class="option-price">от 20 000 ₽</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ШАГ 2: ОБЪЁМ -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">Объём проекта</div>
+      </div>
+      <p class="step-subtitle">Примерное количество страниц / типовых экранов</p>
+      <div class="range-wrap">
+        <div class="range-header">
+          <span class="range-label">Количество страниц / экранов</span>
+          <span class="range-value" id="pagesValue">10</span>
+        </div>
+        <input type="range" id="pagesRange" min="1" max="100" value="10" step="1">
+        <div class="range-ticks">
+          <span>1</span><span>25</span><span>50</span><span>75</span><span>100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ШАГ 3: СЛОЖНОСТЬ -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Уровень детализации ТЗ</div>
+      </div>
+      <p class="step-subtitle">Насколько подробным должен быть документ?</p>
+      <div class="options-grid" id="detailLevel">
+        <button class="option-card" data-mult="0.7" data-name="Краткое">
+          <span class="option-icon">📝</span>
+          <div class="option-name">Краткое</div>
+          <div class="option-desc">10–20 страниц. Общая структура и ключевые требования</div>
+          <span class="option-price">×0.7</span>
+        </button>
+        <button class="option-card selected" data-mult="1" data-name="Стандартное">
+          <span class="option-icon">📋</span>
+          <div class="option-name">Стандартное</div>
+          <div class="option-desc">30–60 страниц. Подробное описание всех блоков и логики</div>
+          <span class="option-price">×1.0 (база)</span>
+        </button>
+        <button class="option-card" data-mult="1.8" data-name="Полное (ГОСТ)">
+          <span class="option-icon">📚</span>
+          <div class="option-name">Полное (по ГОСТ)</div>
+          <div class="option-desc">80–200 страниц. Для тендеров и крупных подрядчиков</div>
+          <span class="option-price">×1.8</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ШАГ 4: ИНТЕГРАЦИИ -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">Интеграции с внешними сервисами</div>
+      </div>
+      <p class="step-subtitle">Выберите всё, что нужно описать в ТЗ (каждая +3 000 ₽)</p>
+      <div class="checks-grid" id="integrations">
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="Платёжная система">
+          <div class="check-text">
+            <div class="check-name">💳 Платёжная система</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="Служба доставки">
+          <div class="check-text">
+            <div class="check-name">🚚 Служба доставки</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="CRM-система">
+          <div class="check-text">
+            <div class="check-name">📊 CRM-система</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="1С / МойСклад">
+          <div class="check-text">
+            <div class="check-name">🏭 1С / МойСклад</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="Email/SMS рассылки">
+          <div class="check-text">
+            <div class="check-name">✉️ Email/SMS рассылки</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="Аналитика (Яндекс, GA)">
+          <div class="check-text">
+            <div class="check-name">📈 Аналитика (Яндекс, GA)</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="Онлайн-чат / поддержка">
+          <div class="check-text">
+            <div class="check-name">💬 Онлайн-чат / поддержка</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="3000" data-name="Авторизация (соцсети)">
+          <div class="check-text">
+            <div class="check-name">🔐 Авторизация (соцсети)</div>
+            <div class="check-price">+3 000 ₽</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- ШАГ 5: ДОПОПЦИИ -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-title">Дополнительные работы</div>
+      </div>
+      <p class="step-subtitle">Что ещё включить в пакет (необязательно)</p>
+      <div class="checks-grid" id="extras">
+        <label class="check-item">
+          <input type="checkbox" data-price="8000" data-name="Прототипы в Figma">
+          <div class="check-text">
+            <div class="check-name">🎨 Прототипы в Figma</div>
+            <div class="check-price">+8 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="15000" data-name="UX-исследование">
+          <div class="check-text">
+            <div class="check-name">🔍 UX-исследование</div>
+            <div class="check-price">+15 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="6000" data-name="Аудит конкурентов">
+          <div class="check-text">
+            <div class="check-name">🏆 Аудит конкурентов</div>
+            <div class="check-price">+6 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="5000" data-name="SEO-требования">
+          <div class="check-text">
+            <div class="check-name">🔎 SEO-требования</div>
+            <div class="check-price">+5 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="10000" data-name="Схема архитектуры">
+          <div class="check-text">
+            <div class="check-name">🏗️ Схема архитектуры</div>
+            <div class="check-price">+10 000 ₽</div>
+          </div>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" data-price="7000" data-name="Описание API">
+          <div class="check-text">
+            <div class="check-name">🔌 Описание API</div>
+            <div class="check-price">+7 000 ₽</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ИТОГОВАЯ ПАНЕЛЬ -->
+  <aside class="summary">
+    <div class="summary-header">
+      <div class="summary-icon">💰</div>
+      <div class="summary-title">
+        Ваш расчёт
+        <small>Обновляется автоматически</small>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-row-label">Тип проекта</span>
+      <span class="summary-row-value" id="sumProject">—</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-row-label">Страниц / экранов</span>
+      <span class="summary-row-value" id="sumPages">—</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-row-label">Детализация</span>
+      <span class="summary-row-value" id="sumDetail">Стандартное</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-row-label">Интеграций</span>
+      <span class="summary-row-value" id="sumIntegrations">0</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-row-label">Доп. работы</span>
+      <span class="summary-row-value" id="sumExtras">0</span>
+    </div>
+
+    <div class="summary-total">
+      <div class="summary-total-label">Примерная стоимость</div>
+      <div class="summary-total-value" id="totalPrice">0 ₽</div>
+      <div class="summary-total-range" id="totalRange">от 0 до 0 ₽</div>
+    </div>
+
+    <div class="summary-meta">
+      <div class="meta-card">
+        <div class="meta-card-label">Срок</div>
+        <div class="meta-card-value" id="totalTime">—</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">Объём ТЗ</div>
+        <div class="meta-card-value" id="totalVolume">—</div>
+      </div>
+    </div>
+
+    <button class="cta-btn" onclick="orderTz()">📩 Заказать ТЗ</button>
+    <div class="cta-note">Бесплатная консультация · Точная смета за 1 день</div>
+
+    <button class="reset-btn" onclick="resetAll()">↺ Сбросить настройки</button>
+  </aside>
+
+</div>
+
+<!-- ФУТЕР -->
+<footer class="doc-footer">
+  <p>
+    <strong>РАБОТА IT</strong> · Калькулятор стоимости ТЗ<br>
+    Все цены указаны ориентировочно. Финальная стоимость определяется после обсуждения деталей.
+  </p>
+</footer>
+
+<script>
+// ===== СОСТОЯНИЕ =====
+const state = {
+  projectType: null,
+  projectBase: 0,
+  pages: 10,
+  detailMult: 1,
+  detailName: 'Стандартное',
+  integrations: [],
+  extras: []
+};
+
+// ===== ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ (для сброса) =====
+const DEFAULTS = {
+  pages: 10,
+  detailMult: 1,
+  detailName: 'Стандартное'
+};
+
+// ===== ШАГ 1: ТИП ПРОЕКТА =====
+document.querySelectorAll('#projectType .option-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('#projectType .option-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.projectType = card.dataset.name;
+    state.projectBase = parseInt(card.dataset.base);
+    updateSummary();
+  });
+});
+
+// ===== ШАГ 2: ПОЛЗУНОК =====
+const pagesRange = document.getElementById('pagesRange');
+const pagesValue = document.getElementById('pagesValue');
+pagesRange.addEventListener('input', () => {
+  state.pages = parseInt(pagesRange.value);
+  pagesValue.textContent = state.pages;
+  updateSummary();
+});
+
+// ===== ШАГ 3: ДЕТАЛИЗАЦИЯ =====
+document.querySelectorAll('#detailLevel .option-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('#detailLevel .option-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.detailMult = parseFloat(card.dataset.mult);
+    state.detailName = card.dataset.name;
+    updateSummary();
+  });
+});
+
+// ===== ШАГ 4: ИНТЕГРАЦИИ =====
+document.querySelectorAll('#integrations input[type="checkbox"]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    cb.parentElement.classList.toggle('checked', cb.checked);
+    state.integrations = Array.from(document.querySelectorAll('#integrations input:checked'))
+      .map(i => ({ name: i.dataset.name, price: parseInt(i.dataset.price) }));
+    updateSummary();
+  });
+});
+
+// ===== ШАГ 5: ДОПОПЦИИ =====
+document.querySelectorAll('#extras input[type="checkbox"]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    cb.parentElement.classList.toggle('checked', cb.checked);
+    state.extras = Array.from(document.querySelectorAll('#extras input:checked'))
+      .map(i => ({ name: i.dataset.name, price: parseInt(i.dataset.price) }));
+    updateSummary();
+  });
+});
+
+// ===== РАСЧЁТ =====
+function calculate() {
+  if (!state.projectType) return 0;
+
+  // Базовая цена проекта
+  let base = state.projectBase;
+
+  // Коэффициент за количество страниц
+  let pagesMult = 1;
+  if (state.pages > 10) pagesMult = 1 + (state.pages - 10) * 0.03;
+  if (state.pages > 50) pagesMult = 1 + (state.pages - 10) * 0.025;
+
+  // Интеграции
+  const integrationsSum = state.integrations.reduce((s, i) => s + i.price, 0);
+
+  // Доп. опции
+  const extrasSum = state.extras.reduce((s, i) => s + i.price, 0);
+
+  // Итого
+  const subtotal = (base * pagesMult + integrationsSum) * state.detailMult + extrasSum;
+  return Math.round(subtotal / 100) * 100; // округление до сотен
+}
+
+function getTimeEstimate(price) {
+  if (price < 5000) return '3–5 дней';
+  if (price < 15000) return '5–10 дней';
+  if (price < 40000) return '2–3 недели';
+  if (price < 80000) return '3–5 недель';
+  return '6–10 недель';
+}
+
+function getVolumeEstimate() {
+  const basePages = {
+    'Сайт-визитка': 10,
+    'Лендинг': 15,
+    'Корпоративный сайт': 40,
+    'Интернет-магазин': 80,
+    'Маркетплейс': 150,
+    'Мобильное приложение': 100,
+    'SaaS-сервис': 120,
+    'Telegram-бот': 25
+  };
+  const base = basePages[state.projectType] || 30;
+  const mult = state.detailMult;
+  const pages = Math.round(base * mult * (1 + state.pages / 50));
+  return pages + ' стр.';
+}
+
+function formatPrice(n) {
+  return n.toLocaleString('ru-RU') + ' ₽';
+}
+
+// ===== ОБНОВЛЕНИЕ ПАНЕЛИ =====
+function updateSummary() {
+  const total = calculate();
+
+  // Строки
+  document.getElementById('sumProject').textContent = state.projectType || '—';
+  document.getElementById('sumPages').textContent = state.pages;
+  document.getElementById('sumDetail').textContent = state.detailName;
+  document.getElementById('sumIntegrations').textContent = state.integrations.length;
+  document.getElementById('sumExtras').textContent = state.extras.length;
+
+  // Итог
+  document.getElementById('totalPrice').textContent = total > 0 ? formatPrice(total) : '0 ₽';
+
+  // Диапазон ±20%
+  const min = Math.round(total * 0.8 / 100) * 100;
+  const max = Math.round(total * 1.2 / 100) * 100;
+  document.getElementById('totalRange').textContent = total > 0
+    ? 'диапазон: ' + formatPrice(min) + ' — ' + formatPrice(max)
+    : 'выберите тип проекта';
+
+  // Мета
+  document.getElementById('totalTime').textContent = total > 0 ? getTimeEstimate(total) : '—';
+  document.getElementById('totalVolume').textContent = state.projectType ? getVolumeEstimate() : '—';
+}
+
+// ===== СБРОС НАСТРОЕК =====
+function resetAll() {
+  if (!confirm('Сбросить все настройки калькулятора?\n\nВыбранный тип проекта, объём, детализация, интеграции и дополнительные работы вернутся к значениям по умолчанию.')) return;
+
+  // 1. Тип проекта — снять выделение
+  document.querySelectorAll('#projectType .option-card').forEach(c => c.classList.remove('selected'));
+  state.projectType = null;
+  state.projectBase = 0;
+
+  // 2. Ползунок — значение по умолчанию
+  pagesRange.value = DEFAULTS.pages;
+  pagesValue.textContent = DEFAULTS.pages;
+  state.pages = DEFAULTS.pages;
+
+  // 3. Детализация — «Стандартное»
+  document.querySelectorAll('#detailLevel .option-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.name === DEFAULTS.detailName);
+  });
+  state.detailMult = DEFAULTS.detailMult;
+  state.detailName = DEFAULTS.detailName;
+
+  // 4. Интеграции — снять все галочки
+  document.querySelectorAll('#integrations input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+    cb.parentElement.classList.remove('checked');
+  });
+  state.integrations = [];
+
+  // 5. Доп. работы — снять все галочки
+  document.querySelectorAll('#extras input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+    cb.parentElement.classList.remove('checked');
+  });
+  state.extras = [];
+
+  // 6. Пересчитать итог
+  updateSummary();
+
+  // 7. Прокрутить к началу формы
+  document.querySelector('.calculator').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===== КНОПКА ЗАКАЗА =====
+function orderTz() {
+  if (!state.projectType) {
+    alert('Пожалуйста, выберите тип проекта (шаг 1)');
+    return;
+  }
+  const total = calculate();
+  const msg = `Здравствуйте! Меня интересует ТЗ для проекта «${state.projectType}».\n\n` +
+    `Параметры из калькулятора:\n` +
+    `• Страниц: ${state.pages}\n` +
+    `• Детализация: ${state.detailName}\n` +
+    `• Интеграций: ${state.integrations.length}\n` +
+    `• Доп. работ: ${state.extras.length}\n` +
+    `• Примерная стоимость: ${formatPrice(total)}\n\n` +
+    `Прошу подготовить точное коммерческое предложение.`;
+
+  // Можно заменить на реальную ссылку Telegram / WhatsApp / форму
+  alert('Скопируйте текст ниже и отправьте нам в Telegram / WhatsApp:\n\n' + msg);
+}
+
+// Инициализация
+updateSummary();
+</script>
+
+</body>
+</html>
